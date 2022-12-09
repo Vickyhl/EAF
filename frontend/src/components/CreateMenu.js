@@ -9,7 +9,14 @@ const CreateMenu = () => {
     formState: { errors },
     handleSubmit,
   } = useForm();
-  const { userData, setUserData } = useContext(data);
+  const [user, setUser] = useState({
+    age: "",
+    height: "",
+    weight: "",
+    gender: "",
+    purpuse: "",
+    health: "",
+  });
   const handleSubmitForm = async (formData) => {
     const { age, height, weight, gender } = formData;
     await axios
@@ -18,22 +25,15 @@ const CreateMenu = () => {
         alert(res.data.message);
       });
   };
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setUser((preve) => {
-  //     return {
-  //       ...preve,
-  //       [name]: value,
-  //     };
-  //   });
-  // };
+
   const handleChange = (e) => {
-    setUserData({
-      ...userData,
+    setUser({
+      ...user,
       [e.target.age]: e.target.value,
       [e.target.height]: e.target.value,
       [e.target.weight]: e.target.value,
       [e.target.gender]: e.target.value,
+      [e.target.purpuse]: e.target.true,
       [e.target.health]: e.target.true,
     });
   };
@@ -106,16 +106,14 @@ const CreateMenu = () => {
             type="checkbox"
             name="selectCheckbox"
             id="selectCheckbox"
-            {...register("chooseCb", { required: "This field is required" })}
-            className={`form-check-label ${
-              errors?.chooseCb ? "is-invalid" : ""
-            }`}
+            {...register("health", { required: "This field is required" })}
+            className={`form-check-label ${errors?.health ? "is-invalid" : ""}`}
             onChange={handleChange}
           />
-          <label htmlFor="chooseCb" className="form-check-label">
+          <label htmlFor="health" className="form-check-label">
             Health declaration
           </label>
-          <div className="validationError">{errors?.chooseCb?.message}</div>
+          <div className="validationError">{errors?.health?.message}</div>
         </div>
 
         <div className="btn-container" onClick={handleSubmit}>
