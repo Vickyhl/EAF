@@ -1,20 +1,22 @@
-import React from 'react';
-import { Container } from 'react-bootstrap';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import "./components/style.css";
+import Header from "./components/Header";
+import Routes1 from "./components/Routes1";
+import { AuthProvider } from "./AuthProvider";
+import { useSelector } from "react-redux";
+import { selectUser } from "./features/userSlice";
+import Login from "./components/Login";
+import Register from "../src/components/Register";
 
 function App() {
+  let userData = localStorage.getItem("user");
+  console.log(userData);
   return (
-    <>
-      <Header/>
-      <main className='py-3'>
-        <Container>
-          <h1>Welcome to Eat&Fit</h1>
-        </Container>      
-      </main>
-      <Footer/> 
-    </>
+    <div>
+      <AuthProvider>
+        <Header />
+        {!userData ? <Login /> : <Routes1 />}
+      </AuthProvider>
+    </div>
   );
 }
-
 export default App;
