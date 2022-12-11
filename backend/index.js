@@ -1,5 +1,6 @@
 import userSchema from "./models/userModel.js";
 import express from "express";
+import router from "./routes/userRoutes";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -10,7 +11,6 @@ app.use(cors());
 /*=================================
         Database
 ===================================*/
-let userData = localStorage.getItem("user");
 
 mongoose
   .connect("mongodb+srv://Vicky:123456EAF@eaf.rhcan5b.mongodb.net/Eat&Fit", {
@@ -34,7 +34,7 @@ mongoose
 //   },
 //   password: String,
 // });
-const UserModel = new mongoose.model("UserModel", userSchema);
+const UserModel = mongoose.model("UserModel", userSchema);
 
 /*=================================
         get and post
@@ -44,7 +44,7 @@ const UserModel = new mongoose.model("UserModel", userSchema);
 // })
 app.post("/register", (req, res) => {
   console.log(req.body);
-  const { firstName, lastName, email, password, repassword } = req.body;
+  const { firstName, lastName, email, password } = req.body;
   UserModel.findOne({ email: email }, (err, user) => {
     if (user) {
       res.send({ message: "This email id already Register" });
@@ -77,21 +77,26 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.post("/createMenu", (req, res) => {
-  console.log(req.body);
-  const { age, height, weight, gender, health, purpuse } = req.body;
-  UserModel.updateOne({
-    age: age,
-    height: height,
-    weight: weight,
-    gender: gender,
-    health: true,
-    purpuse: purpuse,
-  });
-  localStorage.setItem("user", JSON.stringify(res.data.user));
-  // user.save();
-  res.send({ message: "Menu created successfully" });
-});
+app.use("/createMenu", router);
+
+// app.put("http://localhost:5000/createMenu", (req, res) => {
+//   console.log(req.body);
+//   const user = UserModel.findById(req.user._id);
+//   // UserModel.findById(req.userData._id);
+//   if (user) {
+//     user.age = req.body.age;
+//     user.height = req.body.height;
+//     user.weight = req.body.weight;
+//     user.gender = req.body.gender;
+//     user.purpuse = req.body.purpuse;
+//     user.health = req.body.health;
+//   } else {
+//     res.status(404);
+//     throw new Error("User not found");
+//   }
+//   user.save();
+//   res.send({ message: "Menu created successfully" });
+// });
 
 /*============================
         listen

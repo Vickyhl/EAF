@@ -18,9 +18,9 @@ const CreateMenu = () => {
     health: "",
   });
   const handleSubmitForm = async (formData) => {
-    const { age, height, weight, gender } = formData;
+    const { age, height, weight, gender, purpuse, health } = formData;
     await axios
-      .post("http://localhost:5000/createMenu", formData)
+      .put("http://localhost:5000/createMenu", formData)
       .then((res) => {
         alert(res.data.message);
       });

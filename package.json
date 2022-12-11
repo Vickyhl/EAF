@@ -2,7 +2,7 @@
   "name": "eaf",
   "version": "1.0.0",
   "description": "Eat & Fit website",
-  "main": "server.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "node backend/server",

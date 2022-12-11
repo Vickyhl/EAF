@@ -2,8 +2,6 @@ import "./components/style.css";
 import Header from "./components/Header";
 import Routes1 from "./components/Routes1";
 import { AuthProvider } from "./AuthProvider";
-import { useSelector } from "react-redux";
-import { selectUser } from "./features/userSlice";
 import Login from "./components/Login";
 import Register from "../src/components/Register";
 

@@ -24,7 +24,9 @@ export const Login = () => {
     axios.post("http://localhost:5000/login", user).then((res) => {
       alert(res.data.message);
       console.log(res.data.user);
-      navigate("/ ");
+      // navigate("/");
+      window.location.assign("http://localhost:3000/home");
+
       localStorage.setItem("user", JSON.stringify(res.data.user));
     });
   };
@@ -53,7 +55,12 @@ export const Login = () => {
           <button className="btn" onClick={handleSubmit}>
             Login
           </button>
-          <button className="btn" onClick={() => navigate("/register")}>
+          <button
+            className="btn"
+            onClick={() =>
+              window.location.assign("http://localhost:3000/register")
+            }
+          >
             Register
           </button>
         </div>
