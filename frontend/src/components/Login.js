@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
+  let userData = localStorage.getItem("user");
+
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -23,7 +25,7 @@ export const Login = () => {
     e.preventDefault();
     axios.post("http://localhost:5000/login", user).then((res) => {
       alert(res.data.message);
-      console.log(res.data.user);
+      console.log(userData);
       // navigate("/");
       window.location.assign("http://localhost:3000/home");
 

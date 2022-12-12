@@ -1,14 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import data from "../ContextApi";
 
 const CreateMenu = () => {
+  let userData = localStorage.getItem("user");
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
+
   const [user, setUser] = useState({
     age: "",
     height: "",
@@ -17,10 +18,13 @@ const CreateMenu = () => {
     purpuse: "",
     health: "",
   });
+
   const handleSubmitForm = async (formData) => {
     const { age, height, weight, gender, purpuse, health } = formData;
+    // console.log(JSON.parse(userData.weight));
+
     await axios
-      .put("http://localhost:5000/createMenu", formData)
+      .put(`http://localhost:5000/createMenu/${userData._id}`, formData)
       .then((res) => {
         alert(res.data.message);
       });

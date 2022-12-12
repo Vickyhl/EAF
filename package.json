@@ -8,7 +8,7 @@
     "start": "node backend/server",
     "server": "nodemon backend/server",
     "client": "npm start --prefix frontend",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "concurrently \"npm run index\" \"npm run client\"",
     "data:import": "node backend/seeder",
     "data:destroy": "node backend/seeder -d"
   },
@@ -38,10 +38,12 @@
     "mongoose": "^6.7.4",
     "react-redux": "^8.0.5",
     "react-router": "^6.4.4",
+    "react-router-dom": "^6.4.5",
+    "react-scripts": "^5.0.1",
     "redux": "^4.2.0"
   },
   "devDependencies": {
-    "concurrently": "^7.5.0",
+    "concurrently": "^7.6.0",
     "nodemon": "^2.0.20"
   }
 }

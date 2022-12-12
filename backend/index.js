@@ -1,6 +1,5 @@
 import userSchema from "./models/userModel.js";
 import express from "express";
-import router from "./routes/userRoutes";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -23,25 +22,15 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
-// /************schema*********** */
-// const userSchema = new mongoose.Schema({
-//   firstName: String,
-//   lastName: String,
-//   email: {
-//     type: String,
-//     required: true,
-//     unique: true,
-//   },
-//   password: String,
-// });
-const UserModel = mongoose.model("UserModel", userSchema);
+
+const UserModel = new mongoose.model("UserModel", userSchema);
 
 /*=================================
         get and post
 ===================================*/
-// app.get("/",(req,res)=>{
-//     res.send("App is Runing")
-// })
+app.get("/", (req, res) => {
+  res.send("App is Runing");
+});
 app.post("/register", (req, res) => {
   console.log(req.body);
   const { firstName, lastName, email, password } = req.body;
@@ -77,12 +66,10 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.use("/createMenu", router);
-
-// app.put("http://localhost:5000/createMenu", (req, res) => {
+// app.put("/createMenu", (req, res) => {
 //   console.log(req.body);
-//   const user = UserModel.findById(req.user._id);
-//   // UserModel.findById(req.userData._id);
+//   // const user = UserModel.findById(req.user._id);
+//   const user = UserModel.findById("6385fe43464b4dcadf98c329");
 //   if (user) {
 //     user.age = req.body.age;
 //     user.height = req.body.height;
@@ -94,9 +81,37 @@ app.use("/createMenu", router);
 //     res.status(404);
 //     throw new Error("User not found");
 //   }
-//   user.save();
+//   // user.save;
+//   UserModel.updateOne(user);
+//   // console.log(user);
+//   // user._mongooseOptions.save;
 //   res.send({ message: "Menu created successfully" });
 // });
+app.put("http://localhost:5000/createMenu/:id", (req, res) => {
+  // console.log(req.body);
+  const user = UserModel.findByIdAndUpdate("6385fe43464b4dcadf98c329", {
+    $set: req.body,
+  });
+  console.log(user);
+  // console.log(user);
+  // console.log(req.params._id);
+  // if (user) {
+  //   user.age = req.body.age;
+  //   user.height = req.body.height;
+  //   user.weight = req.body.weight;
+  //   user.gender = req.body.gender;
+  //   user.purpuse = req.body.purpuse;
+  //   user.health = req.body.health;
+  // } else {
+  //   res.status(404);
+  //   throw new Error("User not found");
+  // }
+  // // user.save;
+  // UserModel.updateOne(user);
+  // // console.log(user);
+  // // user._mongooseOptions.save;
+  res.send({ message: "Menu created successfully" });
+});
 
 /*============================
         listen

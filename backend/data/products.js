@@ -3,7 +3,8 @@ const products = [
     name: "Milk 3% carton",
     ingredients: "Pasteurized milk, vitamin A, vitamin D",
     Nutrients:
-      "Energy - 42 calories, Fats - 1 gram, Sodium - 50 mg, Total carbohydrates - 5 grams, Proteins - 3.4 grams, Calcium - 100 mg",
+      "Energy - 42 calories, Fats - 1 gram, Total carbohydrates - 5 grams, Proteins - 3.4 grams",
+    Category: "protein",
   },
   {
     name: "Yogurt 1.5%",
