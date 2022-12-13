@@ -52,38 +52,47 @@ export const logout = () => (dispatch) => {
   dispatch({ type: USER_LOGOUT });
 };
 
-export const menu =
-  (age, height, weight, gender, health) => async (dispatch) => {
-    try {
-      dispatch({
-        type: CREATE_MENU_REQUEST,
-      });
+export const createMenu = (id, story) => async (dispatch) => {
+  try {
+    const { data } = await api.updateStory(id, story);
 
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
+    dispatch({ type: UPDATE_STORY, payload: data });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+// export const menu =
+// (age, height, weight, gender, health, purpuse) => async (dispatch) => {
+//   try {
+//     dispatch({
+//       type: CREATE_MENU_REQUEST,
+//     });
 
-      const { data } = await axios.post(
-        "/api/users/menu",
-        { age, height, weight, gender, health },
-        config
-      );
+//     const config = {
+//       headers: {
+//         "Content-type": "application/json",
+//       },
+//     };
 
-      dispatch({
-        type: CREATE_MENU_SUCCESS,
-        payload: data,
-      });
+//     const { data } = await axios.post(
+//       "/api/users/menu",
+//       { age, height, weight, gender, health, purpuse },
+//       config
+//     );
 
-      localStorage.setItem("userInfo", JSON.stringify(data));
-    } catch (error) {
-      dispatch({
-        type: CREATE_MENU_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
-      });
-    }
-  };
+//     dispatch({
+//       type: CREATE_MENU_SUCCESS,
+//       payload: data,
+//     });
+
+//     localStorage.setItem("userInfo", JSON.stringify(data));
+//   } catch (error) {
+//     dispatch({
+//       type: CREATE_MENU_FAIL,
+//       payload:
+//         error.response && error.response.data.message
+//           ? error.response.data.message
+//           : error.message,
+//     });
+//   }
+// };

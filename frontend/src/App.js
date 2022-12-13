@@ -6,13 +6,14 @@ import Login from "./components/Login";
 import Register from "../src/components/Register";
 
 function App() {
-  let userData = localStorage.getItem("user");
-  console.log(userData);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userID = user?._id;
+  console.log(userID);
   return (
     <div>
       <AuthProvider>
         <Header />
-        {!userData ? <Login /> : <Routes1 />}
+        {!user ? <Login /> : <Routes1 />}
       </AuthProvider>
     </div>
   );

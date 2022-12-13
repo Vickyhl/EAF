@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import { createMenu } from "../api/index";
+import { useDispatch, useSelector } from "react-redux";
 
 const CreateMenu = () => {
-  let userData = localStorage.getItem("user");
+  const dispatch = useDispatch();
+  // let userData = localStorage.getItem("user");
+  const userData = JSON.parse(localStorage.getItem("user"));
+
   const {
     register,
     formState: { errors },
@@ -19,12 +24,17 @@ const CreateMenu = () => {
     health: "",
   });
 
-  const handleSubmitForm = async (formData) => {
+  // const handleSubmitForm = async (formData) => {
+  //   dispatch(createMenu(selectedId, { ...formData }));
+  // };
+
+  const handleSubmitForm = (formData) => {
     const { age, height, weight, gender, purpuse, health } = formData;
     // console.log(JSON.parse(userData.weight));
-
-    await axios
-      .put(`http://localhost:5000/createMenu/${userData._id}`, formData)
+    const userID = userData?._id;
+    console.log(userID);
+    axios
+      .put(`http://localhost:5000/createMenu/${userID}`, formData)
       .then((res) => {
         alert(res.data.message);
       });

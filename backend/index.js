@@ -5,6 +5,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 import cors from "cors";
 import mongoose from "mongoose";
+// import menuRoutes from "./routes/menuRoutes";
 app.use(cors());
 
 /*=================================
@@ -66,52 +67,29 @@ app.post("/login", (req, res) => {
   });
 });
 
-// app.put("/createMenu", (req, res) => {
-//   console.log(req.body);
-//   // const user = UserModel.findById(req.user._id);
-//   const user = UserModel.findById("6385fe43464b4dcadf98c329");
-//   if (user) {
-//     user.age = req.body.age;
-//     user.height = req.body.height;
-//     user.weight = req.body.weight;
-//     user.gender = req.body.gender;
-//     user.purpuse = req.body.purpuse;
-//     user.health = req.body.health;
-//   } else {
-//     res.status(404);
-//     throw new Error("User not found");
-//   }
-//   // user.save;
-//   UserModel.updateOne(user);
-//   // console.log(user);
-//   // user._mongooseOptions.save;
-//   res.send({ message: "Menu created successfully" });
-// });
-app.put("http://localhost:5000/createMenu/:id", (req, res) => {
+app.put("/createMenu/:id", async (req, res) => {
   // console.log(req.body);
-  const user = UserModel.findByIdAndUpdate("6385fe43464b4dcadf98c329", {
-    $set: req.body,
-  });
+  // console.log(req.path);
+  // console.log(req.params);
+  // const user = UserModel.findById(req.user._id);
+  const user = await UserModel.findById(req.params.id);
   console.log(user);
-  // console.log(user);
-  // console.log(req.params._id);
-  // if (user) {
-  //   user.age = req.body.age;
-  //   user.height = req.body.height;
-  //   user.weight = req.body.weight;
-  //   user.gender = req.body.gender;
-  //   user.purpuse = req.body.purpuse;
-  //   user.health = req.body.health;
-  // } else {
-  //   res.status(404);
-  //   throw new Error("User not found");
-  // }
-  // // user.save;
-  // UserModel.updateOne(user);
-  // // console.log(user);
-  // // user._mongooseOptions.save;
+  if (user) {
+    user.age = req.body.age;
+    user.height = req.body.height;
+    user.weight = req.body.weight;
+    user.gender = req.body.gender;
+    user.purpuse = req.body.purpuse;
+    user.health = req.body.health;
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  await user.save();
   res.send({ message: "Menu created successfully" });
 });
+
+// app.use("/createMenu", menuRoutes);
 
 /*============================
         listen
