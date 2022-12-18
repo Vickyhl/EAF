@@ -4,14 +4,18 @@ import { useForm } from "react-hook-form";
 import { createMenu } from "../api/index";
 import { useDispatch, useSelector } from "react-redux";
 
-const CreateMenu = () => {
-  const [count, setCount] = useState(0);
+const Main = (handleClick) => {
+  //   const [count, setCount] = useState(0);
+  let isRegistred = 0;
 
   return (
     <div className="container">
       <div>Do you have a user?</div>
       <div className="btn-container">
-        <button className="btn" onClick={() => setCount(count + 1)}>
+        <button
+          className="btn"
+          onClick={(event) => handleClick(isRegistred + 1)}
+        >
           Login
         </button>
         <button

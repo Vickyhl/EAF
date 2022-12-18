@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import { createMenu } from "../api/index";
 import { useDispatch, useSelector } from "react-redux";
 
 const CreateMenu = () => {

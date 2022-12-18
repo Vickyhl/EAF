@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import uniqueValidator from "mongoose-unique-validator";
 import bcrypt from "bcryptjs";
 
 const userSchema = mongoose.Schema(
@@ -57,26 +58,35 @@ const userSchema = mongoose.Schema(
     purpuse: {
       type: String,
       required: false,
+      default: "",
     },
+    menues: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "Menu",
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
 
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
+// userSchema.methods.matchPassword = async function (enteredPassword) {
+//   return await bcrypt.compare(enteredPassword, this.password);
+// };
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    next();
-  }
+// userSchema.pre("save", async function (next) {
+//   if (!this.isModified("password")) {
+//     next();
+//   }
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
+//   const salt = await bcrypt.genSalt(10);
+//   this.password = await bcrypt.hash(this.password, salt);
+// });
+userSchema.plugin(uniqueValidator);
 
-// const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
-export default userSchema;
+export default User;
