@@ -1,7 +1,9 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import ErrorModal from "../../src/shared/components/FormElements/UIElements/ErrorModal.js";
 import { useForm } from "../../src/shared/hooks/formHook";
+import Button from "../../src/shared/components/FormElements/Button";
 import Input from "../../src/shared/components/FormElements/Input";
 import {
   VALIDATOR_EMAIL,
@@ -14,6 +16,9 @@ import Card from "../../src/shared/components/FormElements/UIElements/Card.js";
 
 const Auth = () => {
   const auth = useContext(AuthContext);
+  const [isLoginMode, setIsLoginMode] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
 
   const [formState, inputHandler, setFormData] = useForm(
     {
@@ -29,93 +34,125 @@ const Auth = () => {
     false
   );
 
-  let userData = localStorage.getItem("user");
-  const [user, setUser] = useState({
-    email: "",
-    password: "",
-  });
-  const navigate = useNavigate();
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser((preve) => {
-      return {
-        ...preve,
-        [name]: value,
-      };
-    });
+  const switchModeHandler = () => {
+    if (!isLoginMode) {
+      setFormData(
+        {
+          ...formState.inputs,
+          name: undefined,
+        },
+        formState.inputs.email.isValid && formState.inputs.password.isValid
+      );
+    } else {
+      setFormData(
+        {
+          ...formState.inputs,
+          name: {
+            value: "",
+            isValid: false,
+          },
+        },
+        false
+      );
+    }
+    setIsLoginMode((prevMode) => !prevMode);
   };
-
   const authSubmitHandler = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
 
-    // if (isLoginMode) {
-    //   try {
-    // const responseData = await sendRequest(
-    //   "http://localhost:5000/api/users/login",
-    //   "POST",
-    //   JSON.stringify({
-    //     email: formState.inputs.email.value,
-    //     password: formState.inputs.password.value,
-    //   }),
-    //   {
-    //     "Content-Type": "application/json",
-    //   }
-    // );
-    // auth.login(responseData.user.id);
-    //   } catch (err) {}
-    // } else {
-    //   try {
-    //     const formData = new FormData();
-    //     formData.append("email", formState.inputs.email.value);
-    //     formData.append("name", formState.inputs.name.value);
-    //     formData.append("password", formState.inputs.password.value);
-    //     formData.append("image", formState.inputs.image.value);
-    // const responseData = await sendRequest(
-    //   "http://localhost:5000/api/users/signup",
-    //   "POST",
-    //   formData
-    // );
+    if (isLoginMode) {
+    } else {
+      try {
+        const response = await fetch("http://localhost:5000/api/users/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName: formState.inputs.firstName.value,
+            lastName: formState.inputs.lastName.value,
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+          }),
+        });
 
-    //   auth.login(responseData.user.id);
-    // } catch (err) {}
+        const responseData = await response.json();
+        if (!response.ok) {
+          throw new Error(responseData.message);
+        }
+        setIsLoading(false);
+        auth.login();
+      } catch (err) {
+        setIsLoading(false);
+        setError(err.message || "Something went wrong, please try again.");
+      }
+    }
+  };
+
+  const errorHandler = () => {
+    setError(null);
   };
 
   return (
-    <div className="container">
-      <form onSubmit={authSubmitHandler}>
-        <label htmlFor="email">Email Id</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          validators={[VALIDATOR_EMAIL()]}
-          errorText="Please enter a valid email address"
-          onChange={inputHandler}
-        />
+    <React.Fragment>
+      <div className="container">
+        <ErrorModal error={error} onClear={errorHandler} />
 
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          validators={[VALIDATOR_MINLENGTH(6)]}
-          errorText="Please enter a valid password, at least 6 characters"
-          onChange={inputHandler}
-        />
+        <form onSubmit={authSubmitHandler}>
+          {!isLoginMode && (
+            <div>
+              <label>Your First Name</label>
+              <input
+                element="input"
+                id="firstName"
+                type="text"
+                validators={[VALIDATOR_REQUIRE()]}
+                errorText="Please enter a name"
+                onInput={inputHandler}
+              />
+              <label>Your Last Name</label>
+              <input
+                element="input"
+                id="lastName"
+                type="text"
+                validators={[VALIDATOR_REQUIRE()]}
+                errorText="Please enter a name"
+                onInput={inputHandler}
+              />
+            </div>
+          )}
+          <label htmlFor="email">Email Id</label>
+          <input
+            element="input"
+            type="email"
+            id="email"
+            name="email"
+            validators={[VALIDATOR_EMAIL()]}
+            errorText="Please enter a valid email address"
+            onChange={inputHandler}
+          />
 
-        <div className="btn-container">
-          <button className="btn">Login</button>
-          <button
-            className="btn"
-            onClick={() =>
-              window.location.assign("http://localhost:3000/register")
-            }
-          >
-            Register
-          </button>
-        </div>
-      </form>
-    </div>
+          <label htmlFor="password">Password</label>
+          <input
+            element="input"
+            type="password"
+            id="password"
+            name="password"
+            validators={[VALIDATOR_MINLENGTH(6)]}
+            errorText="Please enter a valid password, at least 6 characters"
+            onChange={inputHandler}
+          />
+
+          <div className="btn-container">
+            <Button type="submit">{isLoginMode ? "LOGIN" : "SIGNUP"}</Button>
+          </div>
+          <Button inverse onClick={switchModeHandler}>
+            SWITCH TO {isLoginMode ? "SIGNUP" : "LOGIN"}
+          </Button>
+        </form>
+      </div>
+    </React.Fragment>
   );
 };
 
