@@ -74,7 +74,7 @@ export const personalizedMenu = async (req, res, next) => {
     );
   }
   const userID = req.params.id;
-  const { userOwn, age, height, weight, gender, purpuse, health } = req.body;
+  const { user, age, height, weight, gender, purpuse, health } = req.body;
   let BMR = 0;
   let meal1 = [];
   let meal2 = [];
@@ -314,7 +314,7 @@ export const personalizedMenu = async (req, res, next) => {
 
   const createdMenu = new Menu({
     // userID,
-    user: userOwn,
+    user: user,
     category: purpuse,
     meal1,
     meal2,
@@ -323,15 +323,15 @@ export const personalizedMenu = async (req, res, next) => {
     meal5,
   });
 
-  let user;
+  let subjectUser;
   try {
-    user = await User.findById(req.body.user);
+    subjectUser = await User.findById(req.body.user);
   } catch (err) {
     const error = new HttpError("Creating menu failed, please try again", 500);
     return next(error);
   }
 
-  if (!user) {
+  if (!subjectUser) {
     const error = new HttpError("Could not find user for provided id", 404);
     return next(error);
   }
@@ -341,11 +341,14 @@ export const personalizedMenu = async (req, res, next) => {
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
-    createdMenu.save({ session: sess });
-    user.menues.push(createdMenu);
-    user.save({ session: sess });
-    sess.commitTransaction();
+    await Menu.collection.insertOne(createdMenu, { session: sess });
+    // await createdMenu.save({ session: sess });
+    subjectUser.menues.push(createdMenu);
+    await subjectUser.save({ session: sess });
+    await sess.commitTransaction();
+    await sess.endSession();
   } catch (err) {
+    console.log(err);
     const error = new HttpError("Creating menu failed, please try again", 500);
     return next(error);
   }
@@ -353,83 +356,83 @@ export const personalizedMenu = async (req, res, next) => {
   res.status(201).json({ menu: createdMenu });
 };
 
-export const updatePlace = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return next(
-      new HttpError("Invalid inputs passed, please check your data.", 422)
-    );
-  }
+// export const updatePlace = async (req, res, next) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     return next(
+//       new HttpError("Invalid inputs passed, please check your data.", 422)
+//     );
+//   }
 
-  const { title, description } = req.body;
-  const placeId = req.params.pid;
+//   const { title, description } = req.body;
+//   const placeId = req.params.pid;
 
-  let place;
-  try {
-    place = await findById(placeId);
-  } catch (err) {
-    const error = new HttpError(
-      "Something went wrong, could not update place.",
-      500
-    );
-    return next(error);
-  }
+//   let place;
+//   try {
+//     place = await findById(placeId);
+//   } catch (err) {
+//     const error = new HttpError(
+//       "Something went wrong, could not update place.",
+//       500
+//     );
+//     return next(error);
+//   }
 
-  place.title = title;
-  place.description = description;
+//   place.title = title;
+//   place.description = description;
 
-  try {
-    await place.save();
-  } catch (err) {
-    const error = new HttpError(
-      "Something went wrong, could not update place.",
-      500
-    );
-    return next(error);
-  }
+//   try {
+//     await place.save();
+//   } catch (err) {
+//     const error = new HttpError(
+//       "Something went wrong, could not update place.",
+//       500
+//     );
+//     return next(error);
+//   }
 
-  res.status(200).json({ place: place.toObject({ getters: true }) });
-};
+//   res.status(200).json({ place: place.toObject({ getters: true }) });
+// };
 
-export const deletePlace = async (req, res, next) => {
-  const placeId = req.params.pid;
+// export const deletePlace = async (req, res, next) => {
+//   const placeId = req.params.pid;
 
-  let place;
-  try {
-    place = await findById(placeId).populate("creator");
-  } catch (err) {
-    const error = new HttpError(
-      "Something went wrong, could not delete place.",
-      500
-    );
-    return next(error);
-  }
+//   let place;
+//   try {
+//     place = await findById(placeId).populate("creator");
+//   } catch (err) {
+//     const error = new HttpError(
+//       "Something went wrong, could not delete place.",
+//       500
+//     );
+//     return next(error);
+//   }
 
-  if (!place) {
-    const error = new HttpError("Could not find place for this id.", 404);
-    return next(error);
-  }
+//   if (!place) {
+//     const error = new HttpError("Could not find place for this id.", 404);
+//     return next(error);
+//   }
 
-  const imagePath = place.image;
+//   const imagePath = place.image;
 
-  try {
-    const sess = await startSession();
-    sess.startTransaction();
-    await place.remove({ session: sess });
-    place.creator.places.pull(place);
-    await place.creator.save({ session: sess });
-    await sess.commitTransaction();
-  } catch (err) {
-    const error = new HttpError(
-      "Something went wrong, could not delete place.",
-      500
-    );
-    return next(error);
-  }
+//   try {
+//     const sess = await startSession();
+//     sess.startTransaction();
+//     await place.remove({ session: sess });
+//     place.creator.places.pull(place);
+//     await place.creator.save({ session: sess });
+//     await sess.commitTransaction();
+//   } catch (err) {
+//     const error = new HttpError(
+//       "Something went wrong, could not delete place.",
+//       500
+//     );
+//     return next(error);
+//   }
 
-  unlink(imagePath, (err) => {
-    console.log(err);
-  });
+//   unlink(imagePath, (err) => {
+//     console.log(err);
+//   });
 
-  res.status(200).json({ message: "Deleted place." });
-};
+//   res.status(200).json({ message: "Deleted place." });
+// };

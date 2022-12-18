@@ -86,22 +86,50 @@ const app = express();
 
 app.use(bodyParser.json());
 
-// /*=================================
-//         Database
-// ===================================*/
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
 
-mongoose
-  .connect("mongodb+srv://Vicky:123456EAF@eaf.rhcan5b.mongodb.net/Eat&Fit", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connection Successfull");
-  })
-  .catch((err) => {
-    console.log(err);
+  next();
+});
+app.post("/register", (req, res) => {
+  console.log(req.body);
+  const { firstName, lastName, email, password } = req.body;
+  UserModel.findOne({ email: email }, (err, user) => {
+    if (user) {
+      res.send({ message: "This email id already Register" });
+    } else {
+      const user = new UserModel({
+        firstName,
+        lastName,
+        email,
+        password,
+      });
+      user.save();
+      res.send({ message: "Successfull Register" });
+    }
   });
+});
 
+app.post("/login", (req, res) => {
+  console.log(req.body);
+  const { email, password } = req.body;
+  UserModel.findOne({ email: email }, (err, user) => {
+    if (user) {
+      if (password == user.password) {
+        res.send({ message: "Login SuccessFull", user });
+      } else {
+        res.send({ message: "Password didn't match" });
+      }
+    } else {
+      res.send({ message: "This email id is not register" });
+    }
+  });
+});
 app.use("/api/menues", menuRoutes);
 app.use("/api/users", usersRoutes);
 
@@ -124,3 +152,19 @@ app.use((error, req, res, next) => {
 app.listen(5000, () => {
   console.log("Server is runing at port 5000");
 });
+
+// /*=================================
+//         Database
+// ===================================*/
+
+mongoose
+  .connect("mongodb+srv://Vicky:123456EAF@eaf.rhcan5b.mongodb.net/Eat&Fit", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connection Successfull");
+  })
+  .catch((err) => {
+    console.log(err);
+  });

@@ -4,7 +4,7 @@ import {
   getMenuById,
   getMenuesByUserId,
   personalizedMenu,
-  updatePlace,
+  // updatePlace,
   // deletePlace,
 } from "../controllers/menuController.js";
 

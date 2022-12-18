@@ -283,6 +283,7 @@ const signup = async (req, res, next) => {
   });
 
   try {
+    console.log(createdUser);
     await createdUser.save();
   } catch (err) {
     const error = new HttpError("Signing up failed, please try again.", 500);

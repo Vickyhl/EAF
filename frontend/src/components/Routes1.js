@@ -17,6 +17,8 @@ const Routes1 = () => {
       <Route path="/auth" element={<Auth />} />
       <Route path="/home" element={<Home />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/auth" element={<Auth />} />
+
       {/* <Route path="/login" element={<Login />} /> */}
       <Route path="/login" element={!userData ? <Login /> : <Home />} />
       <Route

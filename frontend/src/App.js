@@ -22,9 +22,10 @@ function App() {
     <div>
       <AuthProvider>
         <Header />
+        <Routes1 />
         {/* <Main /> */}
         {/* {!isRegistred ? <Login /> : <Register />} */}
-        {!user ? <Login /> : <Routes1 />}
+        {/* {!user ? <Login /> : <Routes1 />} */}
       </AuthProvider>
     </div>
   );
