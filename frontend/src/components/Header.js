@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 const Header = (handleClick) => {
   let userData = localStorage.getItem("user");
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   let isRegistred = 0;
 
   const logOut = () => {
-    navigate("/home");
+    // navigate("/home");
     localStorage.clear();
   };
   handleClick = (text) => {
@@ -47,7 +47,7 @@ const Header = (handleClick) => {
         </a>
         <div className="dropdown-content">
           <a href="/createMenu">Purches menu</a>
-          <a href="#">Watch existing menu</a>
+          <a href="/menu">Watch existing menu</a>
         </div>
       </li>
       <li className="dropdown">

@@ -27,7 +27,7 @@ export const Login = () => {
       alert(res.data.message);
       // console.log(JSON.stringify(res.data.user));
 
-      // window.location.assign("http://localhost:3000/home");
+      window.location.assign("http://localhost:3000/home");
 
       localStorage.setItem("user", JSON.stringify(res.data.user));
     });

@@ -60,20 +60,23 @@ const Auth = () => {
   const authSubmitHandler = async (event) => {
     event.preventDefault();
     setIsLoading(true);
-
     if (isLoginMode) {
     } else {
       try {
-        const response = await fetch("http://localhost:5000/api/users/signup", {
+        const response = await fetch("http://localhost:5000/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            firstName: formState.inputs.firstName.value,
-            lastName: formState.inputs.lastName.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
+            firstName: "vicky",
+            lastName: "hlustov",
+            email: "vikush40@gmail.com",
+            password: "123456",
+            // firstName: formState.inputs.firstName.value,
+            // lastName: formState.inputs.lastName.value,
+            // email: formState.inputs.email.value,
+            // password: formState.inputs.password.value,
           }),
         });
 
@@ -97,7 +100,7 @@ const Auth = () => {
   return (
     <React.Fragment>
       <div className="container">
-        <ErrorModal error={error} onClear={errorHandler} />
+        {/* <ErrorModal error={error} onClear={errorHandler} /> */}
 
         <form onSubmit={authSubmitHandler}>
           {!isLoginMode && (

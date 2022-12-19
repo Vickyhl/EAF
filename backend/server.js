@@ -79,11 +79,13 @@ import mongoose from "mongoose";
 import express from "express";
 import bodyParser from "body-parser";
 import HttpError from "./models/httpError.js";
-import menuRoutes from "../backend/routes/menuRoutes.js";
-import usersRoutes from "../backend/routes/userRoutes.js";
+import menuRoutes from "./routes/menuRoutes.js";
+import usersRoutes from "./routes/userRoutes.js";
+import cors from "cors";
+import User from "./models/userModel.js";
 
 const app = express();
-
+app.use(cors());
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
@@ -97,9 +99,8 @@ app.use((req, res, next) => {
   next();
 });
 app.post("/register", (req, res) => {
-  console.log(req.body);
   const { firstName, lastName, email, password } = req.body;
-  UserModel.findOne({ email: email }, (err, user) => {
+  User.findOne({ email: email }, (err, user) => {
     if (user) {
       res.send({ message: "This email id already Register" });
     } else {
@@ -116,10 +117,11 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log(req.body);
+  console.log("hey");
   const { email, password } = req.body;
-  UserModel.findOne({ email: email }, (err, user) => {
+  User.findOne({ email: email }, (err, user) => {
     if (user) {
+      console.log(user);
       if (password == user.password) {
         res.send({ message: "Login SuccessFull", user });
       } else {
@@ -130,6 +132,27 @@ app.post("/login", (req, res) => {
     }
   });
 });
+
+app.put("/createMenu/:id", async (req, res) => {
+  const user = await User.findById(req.params.id);
+  console.log(user);
+  if (user) {
+    user.age = req.body.age;
+    user.height = req.body.height;
+    user.weight = req.body.weight;
+    user.gender = req.body.gender;
+    user.purpuse = req.body.purpuse;
+    user.health = req.body.health;
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  await user.save();
+  res.send({ message: "Menu created successfully" });
+});
+
+app.use("/signup", menuRoutes);
+
 app.use("/api/menues", menuRoutes);
 app.use("/api/users", usersRoutes);
 

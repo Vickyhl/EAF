@@ -36,6 +36,8 @@ const CreateMenu = () => {
       .put(`http://localhost:5000/createMenu/${userID}`, formData)
       .then((res) => {
         alert(res.data.message);
+
+        window.location.assign("http://localhost:3000/menu");
       });
   };
 
