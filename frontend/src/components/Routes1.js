@@ -7,6 +7,7 @@ import Register from "./Register";
 import CreateMenu from "./CreateMenu";
 import React from "react";
 import Auth from "./Auth";
+import UserMenus from "./UserMenus.js";
 
 const Routes1 = () => {
   let userData = localStorage.getItem("user");
@@ -18,7 +19,7 @@ const Routes1 = () => {
       <Route path="/home" element={<Home />} />
       <Route path="/register" element={<Register />} />
       <Route path="/auth" element={<Auth />} />
-
+      <Route path="/:userId/menus" element={<UserMenus />} />
       {/* <Route path="/login" element={<Login />} /> */}
       <Route path="/login" element={!userData ? <Login /> : <Home />} />
       <Route

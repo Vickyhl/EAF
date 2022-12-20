@@ -1,4 +1,3 @@
-import { unlink } from "fs";
 import { validationResult } from "express-validator";
 import mongoose from "mongoose";
 import HttpError from "../models/httpError.js";
@@ -12,12 +11,13 @@ import {
   vegetables,
   meatProtein,
 } from "../data/courses.js";
-export const getMenuById = async (req, res, next) => {
-  const menuId = req.params.pid;
 
+export const getMenuById = async (req, res, next) => {
+  const menuId = req.params.mid;
+  console.log(menuId);
   let menu;
   try {
-    place = await Menu.findById(menuId);
+    menu = await Menu.findById(menuId);
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not find a menu.",
@@ -33,7 +33,7 @@ export const getMenuById = async (req, res, next) => {
     );
     return next(error);
   }
-
+  // console.log(menu);
   res.json({ menu: menu.toObject({ getters: true }) });
 };
 
@@ -43,7 +43,7 @@ export const getMenuesByUserId = async (req, res, next) => {
   // let menues;
   let userWithMenues;
   try {
-    userWithMenues = await _findById(userId).populate("menues");
+    userWithMenues = await User.findById(userId).select("menus");
   } catch (err) {
     const error = new HttpError(
       "Fetching menues failed, please try again later.",
@@ -53,17 +53,14 @@ export const getMenuesByUserId = async (req, res, next) => {
   }
 
   // if (!places || places.length === 0) {
-  if (!userWithMenues || userWithMenues.menues.length === 0) {
-    return next(
-      new HttpError("Could not find menues for the provided user id.", 404)
-    );
-  }
+  // if (!userWithMenues || userWithMenues.menus.length === 0) {
+  //   return next(
+  //     new HttpError("Could not find menues for the provided user id.", 404)
+  //   );
+  // }
+  let menu = await Menu.findById(userWithMenues.menus[0]);
 
-  res.json({
-    menues: userWithMenues.menues.map((menu) =>
-      menu.toObject({ getters: true })
-    ),
-  });
+  res.json({ menu: menu.toObject({ getters: true }) });
 };
 
 export const personalizedMenu = async (req, res, next) => {
@@ -73,7 +70,6 @@ export const personalizedMenu = async (req, res, next) => {
       new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
-  const userID = req.params.id;
   const { user, age, height, weight, gender, purpuse, health } = req.body;
   let BMR = 0;
   let meal1 = [];
@@ -336,14 +332,14 @@ export const personalizedMenu = async (req, res, next) => {
     return next(error);
   }
 
-  // console.log(user);
+  console.log(createdMenu);
 
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
     await Menu.collection.insertOne(createdMenu, { session: sess });
     // await createdMenu.save({ session: sess });
-    subjectUser.menues.push(createdMenu);
+    subjectUser.menus.push(createdMenu);
     await subjectUser.save({ session: sess });
     await sess.commitTransaction();
     await sess.endSession();

@@ -1,0 +1,11 @@
+.menu-list {
+  list-style: none;
+  margin: 2rem;
+  padding: 0;
+}
+.ul{
+  background: white;
+}
+.div{
+  display:flex
+}

@@ -14,6 +14,6 @@ router.get("/:mid", getMenuById);
 
 router.get("/user/:uid", getMenuesByUserId);
 
-router.post("/menu", [check("purpuse").not().isEmpty()], personalizedMenu);
+router.put("/personalMenu", personalizedMenu);
 
 export default router;

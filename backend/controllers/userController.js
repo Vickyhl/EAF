@@ -282,7 +282,7 @@ const signup = async (req, res, next) => {
     lastName,
     email,
     password,
-    menues: [],
+    menus: [],
   });
 
   try {

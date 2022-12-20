@@ -60,7 +60,7 @@ const userSchema = mongoose.Schema(
       required: false,
       default: "",
     },
-    menues: [
+    menus: [
       {
         type: mongoose.Schema.Types.ObjectId,
         required: true,

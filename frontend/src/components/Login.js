@@ -9,7 +9,6 @@ export const Login = () => {
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +24,6 @@ export const Login = () => {
     e.preventDefault();
     axios.post("http://localhost:5000/login", user).then((res) => {
       alert(res.data.message);
-      // console.log(JSON.stringify(res.data.user));
 
       window.location.assign("http://localhost:3000/home");
 

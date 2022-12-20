@@ -16,7 +16,7 @@ const Header = (handleClick) => {
   };
 
   return (
-    <ul>
+    <ul className="nav-bar-ul">
       <div className="navbar-brand ">
         <h1>Eat & Fit</h1>
       </div>
@@ -28,7 +28,7 @@ const Header = (handleClick) => {
           My account
         </a>
         <div className="dropdown-content">
-          {!userData ? <a href="register">Register</a> : <a href="home"></a>}
+          {!userData ? <a href="/register">Register</a> : <a href="home"></a>}
           {/* <a href="register">Register</a> */}
           {!userData ? (
             <a href="login" onClick={(event) => handleClick(isRegistred + 1)}>
@@ -47,7 +47,7 @@ const Header = (handleClick) => {
         </a>
         <div className="dropdown-content">
           <a href="/createMenu">Purches menu</a>
-          <a href="/menu">Watch existing menu</a>
+          <a href="/:userId/menus">Watch existing menu</a>
         </div>
       </li>
       <li className="dropdown">
