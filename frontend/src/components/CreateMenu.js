@@ -8,6 +8,7 @@ const CreateMenu = () => {
   // let userData = localStorage.getItem("user");
   const userData = JSON.parse(localStorage.getItem("user"));
   const userID = userData?._id;
+  console.log("test", localStorage.getItem("user"));
 
   const {
     register,
@@ -16,6 +17,7 @@ const CreateMenu = () => {
   } = useForm();
 
   const [user, setUser] = useState({
+    userID: "",
     age: "",
     height: "",
     weight: "",
@@ -24,17 +26,23 @@ const CreateMenu = () => {
     health: "",
   });
 
-  // const handleSubmitForm = async (formData) => {
-  //   dispatch(createMenu(selectedId, { ...formData }));
-  // };
-
   const handleSubmitForm = async (formData) => {
-    const { userData, age, height, weight, gender, purpuse, health } = formData;
-    // console.log(JSON.parse(userData.weight));
+    const { age, height, weight, gender, purpuse, health } = formData;
+    console.log(formData.age);
+
     console.log(userID);
     await axios
-      .put("http://localhost:5000/api/menus/personalMenu", formData)
+      .post("http://localhost:5000/api/menus/personalMenu", {
+        age,
+        height,
+        weight,
+        gender,
+        purpuse,
+        health,
+        user: userID,
+      })
       .then((res) => {
+        console.log(res);
         alert(res.data.message);
         window.location.assign(`http://localhost:3000/${userID}/menus`);
       });

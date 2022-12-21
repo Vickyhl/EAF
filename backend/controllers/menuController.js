@@ -70,7 +70,8 @@ export const personalizedMenu = async (req, res, next) => {
       new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
-  const { user, age, height, weight, gender, purpuse, health } = req.body;
+  const user = req.params.uid;
+  const { age, height, weight, gender, purpuse, health, userID } = req.body;
   let BMR = 0;
   let meal1 = [];
   let meal2 = [];
@@ -310,7 +311,7 @@ export const personalizedMenu = async (req, res, next) => {
 
   const createdMenu = new Menu({
     // userID,
-    user: user,
+    user: userID,
     category: purpuse,
     meal1,
     meal2,

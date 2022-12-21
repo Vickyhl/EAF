@@ -14,6 +14,6 @@ router.get("/:mid", getMenuById);
 
 router.get("/user/:uid", getMenuesByUserId);
 
-router.put("/personalMenu", personalizedMenu);
+router.post("/personalMenu", personalizedMenu);
 
 export default router;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
+import menuImg from "./menuImg.jpeg";
 import Menu from "./Menu.js";
 import { useHttpClient } from "../../src/shared/hooks/http-hook.js";
 
@@ -34,6 +34,7 @@ const UserMenus = () => {
 
   return (
     <React.Fragment>
+      <img className="img-fluid" src={menuImg} alt="homeImg" />
       {loadedMenus && <Menu items={loadedMenus} />}
     </React.Fragment>
   );
