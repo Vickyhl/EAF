@@ -1,72 +1,28 @@
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-import bcrypt from "bcryptjs";
 
 const userSchema = mongoose.Schema(
   {
-    firstName: {
+    first_name: {
       type: String,
       required: true,
     },
-    lastName: {
+    last_name: {
       type: String,
       required: true,
     },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
+    county: {
       type: String,
       required: true,
     },
-    isAdmin: {
+    voted: {
       type: Boolean,
-      required: false,
+      required: true,
       default: false,
     },
-    isDietitian: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    gender: {
+    choice: {
       type: String,
-      required: false,
     },
-    health: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    age: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    weight: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    height: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    purpuse: {
-      type: String,
-      required: false,
-      default: "",
-    },
-    menus: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "Menu",
-      },
-    ],
   },
   {
     timestamps: true,
@@ -85,8 +41,9 @@ const userSchema = mongoose.Schema(
 //   const salt = await bcrypt.genSalt(10);
 //   this.password = await bcrypt.hash(this.password, salt);
 // });
+
 userSchema.plugin(uniqueValidator);
 
-const User = mongoose.model("User", userSchema);
+const User = new mongoose.model("User", userSchema);
 
 export default User;

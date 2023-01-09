@@ -2,9 +2,6 @@ import "./components/style.css";
 import Header from "./components/Header";
 import Routes1 from "./components/Routes1";
 import { AuthProvider } from "./AuthProvider";
-import Login from "./components/Login";
-import Register from "../src/components/Register";
-import Main from "../src/components/Main";
 import { useState } from "react";
 
 function App() {

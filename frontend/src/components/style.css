@@ -28,7 +28,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    min-height: 100vh;
+    min-height: 50vh;
     min-width: 100vw;
 }
 
