@@ -8,6 +8,21 @@ import Result from "./models/resultsModel.js";
 import nacl from "tweetnacl";
 import util from "tweetnacl-util";
 
+// nacl.util = require("tweetnacl-util");
+
+let SsecretKey = new Uint8Array([
+  143, 28, 216, 227, 2, 177, 160, 159, 243, 180, 138, 230, 142, 165, 28, 189,
+  208, 63, 130, 131, 204, 240, 105, 142,
+]);
+let choice = new Uint8Array([
+  143, 28, 216, 227, 2, 177, 160, 159, 243, 180, 138, 230, 142, 165, 28, 189,
+  208, 63, 130, 131, 204, 240, 105, 142, 152, 26, 27, 28, 29, 30, 32, 31,
+]);
+let key = new Uint8Array([
+  143, 28, 216, 227, 2, 177, 160, 159, 243, 180, 138, 230, 142, 165, 28, 189,
+  208, 63, 130, 131, 204, 240, 105, 142, 152, 26, 27, 28, 29, 30, 32, 31,
+]);
+
 // /*=================================
 //         Database
 // ===================================*/
@@ -27,7 +42,6 @@ mongoose
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -38,15 +52,21 @@ app.use((req, res, next) => {
 
   next();
 });
-const SpublicKey = nacl.box.keyPair().publicKey;
-const secretKey = nacl.box.keyPair().secretKey;
+// const SsecretKey = nacl.box.keyPair().secretKey;
+// const SpublicKey = nacl.box.keyPair().publicKey;
+
+let secretKey = nacl.randomBytes(nacl.secretbox.nonceLength);
+let SpublicKey = nacl.randomBytes(nacl.secretbox.nonceLength);
+
 app.get("/PBrequest", async (req, res) => {
+  // console.log(SpublicKey);
   res.json(SpublicKey);
 });
 
 app.post("/vote", async (req, res) => {
-  const { id, choice, publicKey } = req.body;
+  let { id, choiee, publicKey, decrypte } = req.body;
   let user = await User.findById(id);
+
   //finding the object that holds the results
   let results = await Result.findById("63b6bab8514d5edacab52327");
   if (user) {
@@ -57,22 +77,17 @@ app.post("/vote", async (req, res) => {
   } else {
     res.send({ message: "This id is not authorized to vote!" });
   }
-  console.log(choice.cipher_text);
-  //decrypt users choice
-  let decoded_message = nacl.box.open(
-    choice.cipher_text,
-    choice.one_time_code,
-    publicKey,
-    secretKey
-  );
-  let plain_text = encodeInto(decoded_message, uint8Array);
-  console.log(plain_text);
-  // if (choice === "Democrat") {
-  //   results.Democrat += 1;
-  // } else if (choice === "Republican") {
-  //   results.Republican += 1;
-  // }
-  // await results.save();
+
+  let decrypted = nacl.secretbox.open(choice, SsecretKey, key);
+
+  if (decrypte === "Democrat") {
+    results.Democrat += 1;
+  } else if (decrypte === "Republican") {
+    results.Republican += 1;
+  }
+  await results.save();
+
+  decrypted = decrypte;
 });
 
 app.use((req, res, next) => {

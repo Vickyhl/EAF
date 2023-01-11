@@ -4,16 +4,17 @@ import { useForm } from "react-hook-form";
 import secondPic from "./secondPic.png";
 import { useHttpClient } from "../../src/shared/hooks/http-hook.js";
 import nacl from "tweetnacl";
-nacl.util = require("tweetnacl-util");
+import util from "tweetnacl-util";
 
 export const Vote = () => {
   const { sendRequest } = useHttpClient();
-  const [publicKey, setpublicKey] = useState();
-  let SpublicKey = nacl.box.keyPair().publicKey;
+  const [Key, setKey] = useState();
+  let publicKey = nacl.box.keyPair().publicKey;
+  const SpublicKey = nacl.box.keyPair().publicKey;
   let secretKey = nacl.box.keyPair().secretKey;
+  // const SsecretKey = nacl.box.keyPair().secretKey;
 
   const {
-    register,
     formState: { errors },
   } = useForm();
   const [user, setUser] = useState({
@@ -28,9 +29,8 @@ export const Vote = () => {
         const responseData = await sendRequest(
           "http://localhost:5000/PBrequest"
         );
-
-        setpublicKey(responseData.PB);
-        // setLoadedMenus(responseData);
+        // console.log("servers public key is:", responseData.SpublicKey);
+        setKey(responseData.PB);
       } catch (err) {}
     };
     fetcPB();
@@ -38,31 +38,25 @@ export const Vote = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("hey", user.choice);
+    let decrypte = user.choice;
 
     //encryption of users choice
-    const one_time_code = nacl.randomBytes(24);
-    const cipher_text = nacl.box(
-      nacl.util.decodeUTF8(user.choice),
-      one_time_code,
-      SpublicKey,
-      secretKey
-    );
-    const transitMessage = { cipher_text, one_time_code };
+    let secretKey = nacl.randomBytes(nacl.secretbox.nonceLength);
+    let secret_msg = util.decodeUTF8(user.choice);
+    let encrypted = nacl.secretbox(secret_msg, secretKey, SpublicKey);
+    console.log(encrypted);
 
-    const { id, choice, publicKey } = user;
     await axios
       .post("http://localhost:5000/vote", {
         id: user.id,
-        publicKey: nacl.box.keyPair().publicKey,
-        choice: transitMessage,
+        choice: encrypted, //encrypted choice
+        publicKey: publicKey,
+        decrypte,
       })
       .then((res) => {
         alert(res.data.message);
 
         window.location.assign("http://localhost:3000/");
-
-        //   localStorage.setItem("user", JSON.stringify(res.data.user));
       });
   };
 
@@ -89,27 +83,6 @@ export const Vote = () => {
           name="choice"
           onChange={handleChange}
         />
-        {/* <label htmlFor="choice">
-          Please enter your voting (Democrat or Republican)
-        </label>
-        <select>
-          <option></option>
-          <option
-            type="Democrat"
-            id="Democrat"
-            name="Democrat"
-            onChange={handleChange}
-
-            // value="Democrat"
-          >
-            Democrat
-          </option>
-          <option value="Republican">Republican</option>
-          onChange={handleChange}
-        </select>
-        {errors?.choice?.message && (
-          <div className="validationError">{errors?.choice?.message}</div>
-        )} */}
 
         <label htmlFor="ballot">Please enter your prefered ballot:</label>
         <select>
